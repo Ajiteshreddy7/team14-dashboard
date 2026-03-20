@@ -4,6 +4,14 @@ A Streamlit-based interactive dashboard that transforms HUD Fair Market Rent (FM
 
 ---
 
+## 🚀 Live Demo
+
+**[View the live dashboard →](https://jdwexuavexhpsoogak3jjk.streamlit.app)**
+
+> Hosted on Streamlit Community Cloud. No installation required.
+
+---
+
 ## 📌 Overview
 
 This dashboard pulls from HUD's official FMR dataset to help users:
