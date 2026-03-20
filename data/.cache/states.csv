@@ -1,0 +1,52 @@
+state_name,state_code,state_num,category
+Alabama,AL,1.0,State
+Alaska,AK,2.0,State
+Arizona,AZ,4.0,State
+Arkansas,AR,5.0,State
+California,CA,6.0,State
+Colorado,CO,8.0,State
+Connecticut,CT,9.0,State
+Delaware,DE,10.0,State
+District of Columbia,DC,11.0,State
+Florida,FL,12.0,State
+Georgia,GA,13.0,State
+Hawaii,HI,15.0,State
+Idaho,ID,16.0,State
+Illinois,IL,17.0,State
+Indiana,IN,18.0,State
+Iowa,IA,19.0,State
+Kansas,KS,20.0,State
+Kentucky,KY,21.0,State
+Louisiana,LA,22.0,State
+Maine,ME,23.0,State
+Maryland,MD,24.0,State
+Massachusetts,MA,25.0,State
+Michigan,MI,26.0,State
+Minnesota,MN,27.0,State
+Mississippi,MS,28.0,State
+Missouri,MO,29.0,State
+Montana,MT,30.0,State
+Nebraska,NE,31.0,State
+Nevada,NV,32.0,State
+New Hampshire,NH,33.0,State
+New Jersey,NJ,34.0,State
+New Mexico,NM,35.0,State
+New York,NY,36.0,State
+North Carolina,NC,37.0,State
+North Dakota,ND,38.0,State
+Ohio,OH,39.0,State
+Oklahoma,OK,40.0,State
+Oregon,OR,41.0,State
+Pennsylvania,PA,42.0,State
+Rhode Island,RI,44.0,State
+South Carolina,SC,45.0,State
+South Dakota,SD,46.0,State
+Tennessee,TN,47.0,State
+Texas,TX,48.0,State
+Utah,UT,49.0,State
+Vermont,VT,50.0,State
+Virginia,VA,51.0,State
+Washington,WA,53.0,State
+West Virginia,WV,54.0,State
+Wisconsin,WI,55.0,State
+Wyoming,WY,56.0,State
