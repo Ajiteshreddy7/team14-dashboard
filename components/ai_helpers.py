@@ -213,7 +213,28 @@ _ALLOWED_COLS = {
     "livability_score", "rent_index",
 }
 _ALLOWED_RE = re.compile(r'^[\s\w\.\(\)&|<>=!,"\'\-\+\*/%]+$')
+STATE_NAME_TO_CODE = {
+    "alabama": "AL", "alaska": "AK", "arizona": "AZ", "arkansas": "AR",
+    "california": "CA", "colorado": "CO", "connecticut": "CT", "delaware": "DE",
+    "florida": "FL", "georgia": "GA", "hawaii": "HI", "idaho": "ID",
+    "illinois": "IL", "indiana": "IN", "iowa": "IA", "kansas": "KS",
+    "kentucky": "KY", "louisiana": "LA", "maine": "ME", "maryland": "MD",
+    "massachusetts": "MA", "michigan": "MI", "minnesota": "MN", "mississippi": "MS",
+    "missouri": "MO", "montana": "MT", "nebraska": "NE", "nevada": "NV",
+    "new hampshire": "NH", "new jersey": "NJ", "new mexico": "NM", "new york": "NY",
+    "north carolina": "NC", "north dakota": "ND", "ohio": "OH", "oklahoma": "OK",
+    "oregon": "OR", "pennsylvania": "PA", "rhode island": "RI", "south carolina": "SC",
+    "south dakota": "SD", "tennessee": "TN", "texas": "TX", "utah": "UT",
+    "vermont": "VT", "virginia": "VA", "washington": "WA", "west virginia": "WV",
+    "wisconsin": "WI", "wyoming": "WY", "district of columbia": "DC",
+}
 
+def _replace_state_names_with_codes(question: str) -> str:
+    q = question
+    for name in sorted(STATE_NAME_TO_CODE.keys(), key=len, reverse=True):
+        code = STATE_NAME_TO_CODE[name]
+        q = re.sub(rf"\b{re.escape(name)}\b", code, q, flags=re.IGNORECASE)
+    return q
 
 def _safe_query(df: pd.DataFrame, expr: str) -> pd.DataFrame:
     if "__" in expr or not _ALLOWED_RE.match(expr):
@@ -231,32 +252,56 @@ def _safe_query(df: pd.DataFrame, expr: str) -> pd.DataFrame:
 def nl_query_box(df: Optional[pd.DataFrame]):
     st.subheader("Ask the data in plain English")
     st.caption(
-        'Example: counties in TX where br2_fmr < 1200 and '
-        'burden_category == "Affordable (<30%)"'
+        'Examples: counties in Texas where br2_fmr < 1200 | '
+        'counties in CA where median_income > 80000 | '
+        'places with livability_score > 70 and rent_burden_pct < 30'
     )
+
     if df is None or df.empty:
         st.info("Load data first to query it.")
         return
+
     q = st.text_input("Your question", key="nl_query_input")
     if not q:
         return
+
+    normalized_question = _replace_state_names_with_codes(q)
+
     with st.spinner("Translating..."):
         prompt = (
-            "Translate the user's question into a SINGLE pandas .query() "
-            "expression using ONLY these columns: "
+            "Translate the user's question into a SINGLE pandas DataFrame.query() expression "
+            "using ONLY these columns: "
             + ", ".join(sorted(_ALLOWED_COLS))
-            + ". Return ONLY the expression, no code fences, no explanation. "
-            "Use & | ~ for boolean ops, == for equality. "
-            "Strings must be in double quotes.\n\n"
-            f"Question: {q}"
+            + ". Return ONLY the expression. No explanation. No code fences.\n\n"
+            "Rules:\n"
+            "- Use only these dataframe columns.\n"
+            "- Use ==, !=, <, <=, >, >= for comparisons.\n"
+            "- Use & for AND, | for OR, and ~ for NOT.\n"
+            "- String values must be in double quotes.\n"
+            '- For states, use state_code == "TX" style comparisons.\n'
+            "- If the user mentions salary or income, map it to median_income.\n"
+            "- If the user mentions affordable, use burden_category == \"Affordable (<30%)\".\n"
+            "- If the user mentions moderate, use burden_category == \"Moderate (30-50%)\".\n"
+            "- If the user mentions severe, use burden_category == \"Severe (>50%)\".\n"
+            "- If the user mentions 0 bedroom or studio, use br0_fmr.\n"
+            "- If the user mentions 1 bedroom, use br1_fmr.\n"
+            "- If the user mentions 2 bedroom, use br2_fmr.\n"
+            "- If the user mentions 3 bedroom, use br3_fmr.\n"
+            "- If the user mentions 4 bedroom, use br4_fmr.\n"
+            "- Counties or places refer to rows in the dataframe.\n"
+            "- Do not invent columns.\n\n"
+            f"Question: {normalized_question}"
         )
         expr = chat([{"role": "user", "content": prompt}], max_tokens=120, temperature=0)
+
     expr = expr.strip().strip("`").replace("python", "").strip()
     st.code(expr, language="python")
+
     try:
         result = _safe_query(df, expr)
     except Exception as e:
         st.error(f"Could not run that query safely: {e}")
         return
+
     st.success(f"Matched {len(result):,} rows")
     st.dataframe(result.head(200), use_container_width=True)
