@@ -8,6 +8,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import streamlit as st
 import pandas as pd
+from components import ai_helpers
 
 
 def render(df, br_col, bedroom_label):
@@ -213,3 +214,6 @@ def render(df, br_col, bedroom_label):
         xaxis_tickangle=-10,
     )
     st.plotly_chart(fig_targets, use_container_width=True)
+
+    # ── AI relocation recommendation (grounded in HUD rows) ──
+    ai_helpers.relocation_verdict(orig, dest, bedroom_label)
