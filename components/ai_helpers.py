@@ -65,10 +65,10 @@ def get_llm_client():
         return None
     try:
         key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY", ""))
-        base = st.secrets.get("OPENAI_BASE_URL", os.getenv("OPENAI_BASE_URL", None))
+        base = st.secrets.get("OPENAI_BASE_URL", os.getenv("OPENAI_BASE_URL", "https://api.groq.com/openai/v1"))
     except Exception:
         key = os.getenv("OPENAI_API_KEY", "")
-        base = os.getenv("OPENAI_BASE_URL", None)
+        base = os.getenv("OPENAI_BASE_URL", "https://api.groq.com/openai/v1")
     if not key:
         return None
     return OpenAI(api_key=key, base_url=base) if base else OpenAI(api_key=key)
@@ -76,9 +76,9 @@ def get_llm_client():
 
 def _model() -> str:
     try:
-        return st.secrets.get("CHATBOT_MODEL", os.getenv("CHATBOT_MODEL", "gpt-4o-mini"))
+        return st.secrets.get("CHATBOT_MODEL", os.getenv("CHATBOT_MODEL", "llama-3.3-70b-versatile"))
     except Exception:
-        return os.getenv("CHATBOT_MODEL", "gpt-4o-mini")
+        return os.getenv("CHATBOT_MODEL", "llama-3.3-70b-versatile")
 
 
 def chat(messages: list, max_tokens: int = 400, temperature: float = 0.2) -> str:
