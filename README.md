@@ -111,6 +111,49 @@ The app will open in your browser at `http://localhost:8501`.
 
 ---
 
+## 🤖 Enable AI features (free — Groq)
+
+The dashboard ships with a grounded AI layer (Insight Cards, Fairness Check, Relocation Verdict, and a Natural-Language Query box). These features stay quietly offline unless you provide an API key.
+
+The default provider is **Groq**, which offers a free tier that's more than enough for classroom or demo use.
+
+### 1. Get a free Groq API key
+
+1. Go to [console.groq.com/keys](https://console.groq.com/keys) and sign in (GitHub / Google).
+2. Click **Create API Key**, copy the value (it starts with `gsk_...`).
+
+### 2. Add the key to Streamlit Cloud
+
+In your Streamlit Cloud app: **App settings → Secrets → Edit** and add:
+
+```toml
+OPENAI_API_KEY = "gsk_your_groq_key_here"
+# The two lines below are the defaults; only include them if you want to override.
+# OPENAI_BASE_URL = "https://api.groq.com/openai/v1"
+# CHATBOT_MODEL   = "llama-3.3-70b-versatile"
+```
+
+Save. The app will re-deploy automatically and AI features will light up.
+
+### Run locally
+
+Create `.streamlit/secrets.toml` with the same content (and keep that file out of git — it's already in `.gitignore`).
+
+### Switch providers (optional)
+
+Because the code uses the OpenAI-compatible client, you can point it at any OpenAI-compatible API by changing just the two optional secrets:
+
+| Provider | `OPENAI_BASE_URL` | `CHATBOT_MODEL` | Notes |
+|---|---|---|---|
+| Groq (default, free) | `https://api.groq.com/openai/v1` | `llama-3.3-70b-versatile` | Fast & free. |
+| Google Gemini (free tier) | `https://generativelanguage.googleapis.com/v1beta/openai/` | `gemini-1.5-flash` | Use a Google AI Studio key. |
+| OpenAI (paid) | *(leave empty)* | `gpt-4o-mini` | Requires funded OpenAI account. |
+| Local Ollama | `http://localhost:11434/v1` | `llama3.2:3b` | Local only, not for Streamlit Cloud. |
+
+If no key is configured, every AI widget renders a neutral "AI features are offline" message and the rest of the dashboard works normally.
+
+---
+
 ## 🚀 Usage
 
 1. Launch the app with `streamlit run app.py`
