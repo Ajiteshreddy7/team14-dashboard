@@ -5,6 +5,7 @@ HR Compensation Analysts | Remote Company Salary Tool
 
 import os
 import streamlit as st
+from components import ai_helpers
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -191,18 +192,55 @@ else:
     with tab1:
         from components.rent_index import render
         render(filtered, br_col, bedroom_label, selected_state)
+        ai_helpers.insight_card(
+            "Rent Index",
+            filtered,
+            "Summarize the rent-burden landscape for the current bedroom size: "
+            "where is it most affordable, where is it most severe, and any outliers?",
+            cols=["display_name", "state_code", br_col,
+                  "rent_burden_pct", "burden_category", "livability_score"],
+            key="ai_rent_index",
+        )
 
     with tab2:
         from components.salary_calc import render
         render(df, br_col, bedroom_label)
+        ai_helpers.insight_card(
+            "Salary Calculator context",
+            df,
+            "For the bedroom size selected, which markets offer the healthiest "
+            "salary-to-rent ratio (low rent_burden_pct, high median_income)?",
+            cols=["display_name", "state_code", br_col,
+                  "median_income", "rent_burden_pct", "burden_category"],
+            key="ai_salary",
+        )
 
     with tab3:
         from components.relocation import render
         render(df, br_col, bedroom_label)
+        ai_helpers.insight_card(
+            "Relocation context",
+            df,
+            "Group the dataset by state_code and call out 2-3 non-obvious "
+            "relocation destinations that combine low rent_burden_pct with "
+            "above-average livability_score.",
+            cols=["display_name", "state_code", br_col,
+                  "rent_burden_pct", "burden_category", "livability_score"],
+            key="ai_relocation",
+        )
 
     with tab4:
         from components.hiring_market import render
         render(filtered, br_col, bedroom_label, selected_state)
+        ai_helpers.insight_card(
+            "Hiring Explorer",
+            filtered,
+            "Which markets in the current filter look like the best hiring destinations "
+            "given livability_score, rent_burden_pct, and median_income?",
+            cols=["display_name", "state_code", "livability_score",
+                  "rent_burden_pct", "median_income", br_col],
+            key="ai_hiring",
+        )
 
     with tab5:
         from components.trends import render
@@ -219,3 +257,14 @@ else:
             if st.session_state["df_trends"] is None:
                 st.info("Click the button to load 5 years of rent trend data.")
         render(df, st.session_state.get("df_trends"), br_col, bedroom_label)
+        ai_helpers.insight_card(
+            "Trend Tracker",
+            st.session_state.get("df_trends"),
+            "Describe the multi-year FMR trajectory: which states are accelerating, "
+            "which are flattening, and name the largest YoY movers.",
+            key="ai_trends",
+        )
+
+    # ── Natural-language query (global) ──
+    with st.expander("🔎 Natural-language query (beta)"):
+        ai_helpers.nl_query_box(df)
