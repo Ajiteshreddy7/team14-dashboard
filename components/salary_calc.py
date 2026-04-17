@@ -8,6 +8,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import streamlit as st
 import pandas as pd
+from components import ai_helpers
 import numpy as np
 
 
@@ -195,3 +196,11 @@ def render(df, br_col, bedroom_label):
     )
     st.plotly_chart(fig_bar, use_container_width=True)
     st.caption("🔴 Underpaid = employee deserves more | 🟢 Fair | 🔵 Overpaid for location")
+
+    # ── AI fairness check (grounded in HUD row) ──
+    ai_helpers.fairness_check(
+        location=emp_county,
+        bedroom_label=bedroom_label,
+        annual_salary=base_salary,
+        local_row=emp_row,
+    )
