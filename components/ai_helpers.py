@@ -244,6 +244,8 @@ def _safe_query(df: pd.DataFrame, expr: str) -> pd.DataFrame:
     bad = referenced - _ALLOWED_COLS - {
         "and", "or", "not", "in", "True", "False",
         "str", "contains", "startswith", "endswith",
+        "max", "min", "mean", "median", "sum", "abs",
+        "round", "len", "upper", "lower",
     }
     if bad:
         raise ValueError(f"Unknown/forbidden identifiers: {sorted(bad)}")
@@ -278,7 +280,17 @@ def nl_query_box(df: Optional[pd.DataFrame]):
             "- Use only these dataframe columns.\n"
             "- Use ==, !=, <, <=, >, >= for comparisons.\n"
             "- Use & for AND, | for OR, and ~ for NOT.\n"
-            "- String values must be in double quotes.\n"
+   max
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          "- String values must be in double quotes.\n"
             '- For states, use state_code == "TX" style comparisons.\n'
             "- If the user mentions salary or income, map it to median_income.\n"
             "- If the user mentions affordable, use burden_category == \"Affordable (<30%)\".\n"
@@ -290,7 +302,9 @@ def nl_query_box(df: Optional[pd.DataFrame]):
             "- If the user mentions 3 bedroom, use br3_fmr.\n"
             "- If the user mentions 4 bedroom, use br4_fmr.\n"
             "- Counties or places refer to rows in the dataframe.\n"
-            "- Do not invent columns.\n\n"
+            "- Do not invent columns.\n"
+            "- Do NOT use method calls like .max(), .min(), .mean() inside the expression. "
+            "Use numeric constants instead (e.g., rent_index > 90).\n\n"
             f"Question: {normalized_question}"
         )
         expr = chat([{"role": "user", "content": prompt}], max_tokens=120, temperature=0)
