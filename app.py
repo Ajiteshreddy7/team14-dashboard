@@ -204,7 +204,7 @@ else:
 
     with tab2:
         from components.salary_calc import render
-        render(df, br_col, bedroom_label)
+        render(filtered, br_col, bedroom_label)
         ai_helpers.insight_card(
             "Salary Calculator context",
             filtered,
