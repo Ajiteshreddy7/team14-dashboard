@@ -207,9 +207,10 @@ else:
         render(df, br_col, bedroom_label)
         ai_helpers.insight_card(
             "Salary Calculator context",
-            df,
-            "For the bedroom size selected, which markets offer the healthiest "
-            "salary-to-rent ratio (low rent_burden_pct, high median_income)?",
+            filtered,
+            "For the bedroom size and state filter selected, which counties "
+            "offer the healthiest salary-to-rent ratio "
+            "(low rent_burden_pct, high median_income)?",
             cols=["display_name", "state_code", br_col,
                   "median_income", "rent_burden_pct", "burden_category"],
             key="ai_salary",
@@ -220,8 +221,8 @@ else:
         render(df, br_col, bedroom_label)
         ai_helpers.insight_card(
             "Relocation context",
-            df,
-            "Group the dataset by state_code and call out 2-3 non-obvious "
+            filtered,
+            "Within the current state/filter, call out 2-3 non-obvious "
             "relocation destinations that combine low rent_burden_pct with "
             "above-average livability_score.",
             cols=["display_name", "state_code", br_col,
