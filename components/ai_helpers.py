@@ -239,7 +239,8 @@ def _replace_state_names_with_codes(question: str) -> str:
 def _safe_query(df: pd.DataFrame, expr: str) -> pd.DataFrame:
     if "__" in expr or not _ALLOWED_RE.match(expr):
         raise ValueError("Unsafe characters in query.")
-    referenced = set(re.findall(r"[A-Za-z_][A-Za-z0-9_]*", expr))
+    bare = re.sub(r'\"[^\"]*\"|\'[^\']*\'', '', expr)  # strip string literals
+    referenced = set(re.findall(r"[A-Za-z_][A-Za-z0-9_]*", bare))
     bad = referenced - _ALLOWED_COLS - {
         "and", "or", "not", "in", "True", "False",
         "str", "contains", "startswith", "endswith",
