@@ -280,16 +280,6 @@ def nl_query_box(df: Optional[pd.DataFrame]):
             "- Use only these dataframe columns.\n"
             "- Use ==, !=, <, <=, >, >= for comparisons.\n"
             "- Use & for AND, | for OR, and ~ for NOT.\n"
-   max
-          
-          
-          
-          
-          
-          
-          
-          
-          
           "- String values must be in double quotes.\n"
             '- For states, use state_code == "TX" style comparisons.\n'
             "- If the user mentions salary or income, map it to median_income.\n"
